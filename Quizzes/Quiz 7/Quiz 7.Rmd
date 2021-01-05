@@ -1,0 +1,34 @@
+---
+title: "Quiz 7"
+author: "Nicholas Colonna"
+date: "3/28/2018"
+output: word_document
+---
+#Use quantmod package in R and download daily data for "AAPL" for the last year.
+
+#-Calculate weekly return, and report skewness and kurtosis for this weekly return.
+#-Also, using an appropriate test, report whether this return is normally distributed or not?
+#-Report if the return is leptokurtic or not?
+
+```{r }
+#install.packages("quantmod")
+#install.packages("fBasics")
+library(quantmod)
+library(fBasics)
+
+#1
+getSymbols("AAPL", src='yahoo', from=as.Date("2017-01-01"), to=as.Date("2017-12-31"))
+weekly_Ret <- weeklyReturn(AAPL)
+weekly_Ret <- as.data.frame(weekly_Ret)
+skewness(weekly_Ret$weekly.returns)
+kurtosis(weekly_Ret$weekly.returns)
+
+#2
+jarqueberaTest(weekly_Ret$weekly.returns)
+#Since the p-value is greater than 0.05, we accept the null hypothesis and connclude that there is no significant evidence that the distribution is NOT normally distributed
+
+#3
+kurtosis(weekly_Ret$weekly.returns)
+#Since the Excess Kurtosis is less than 0, the weekly returns are not leptokurtic. Therefore, they have skinny tails
+```
+

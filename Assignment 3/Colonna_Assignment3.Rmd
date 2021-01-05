@@ -1,0 +1,104 @@
+---
+title: "Assignment 3"
+author: "Nicholas Colonna"
+date: "3/2/2018"
+output: word_document
+---
+
+```{r }
+#PROBLEM 1
+#Create Vectors
+v1 <- c(1,3,5,7,9,11,13,15,17,19)
+v1
+v2 <- seq(0,20,by=2)
+v2
+
+#Explicit Conversion
+v2 <- as.character(v2)
+v2
+v3 <- as.logical(v1)
+v3
+
+#Matrix and List
+matrix1 <- matrix(v1, nrow=2, ncol=5, byrow=TRUE)
+matrix1
+myFirstList <- list(v1,v2,v3)
+names(myFirstList) <- c("Number","Character","Logical")
+myFirstList
+
+
+#PROBLEM 2
+smallest_number <- 2520
+testDiv<-vector()
+for(i in 1:20){
+  testDiv[i] <- smallest_number %% i
+}
+while(sum(testDiv) != 0){
+  smallest_number <- smallest_number + 2520
+  for(i in 1:20){
+    testDiv[i] <- smallest_number %% i
+  }
+}
+smallest_number
+
+
+#PROBLEM 3
+JPM2018 <- read.csv("JPM.csv", header=TRUE)
+subJPM <- JPM2018[2:5]
+subJPM
+
+colMeans <- sapply(subJPM, mean)
+colMeans
+
+rowMeans <- matrix(apply(subJPM, 1, mean), nrow=3, ncol=5, byrow=TRUE)
+rowMeans
+
+
+#PROBLEM 4
+#1 How many draws on average to get one level A prize
+numDraws <- rgeom(1000, 0.2)
+mean(numDraws)
+#2 Probability of A within 5 draws
+theoreticalDraws <- .2*(.8^0) + .2*(.8^1) + .2*(.8^2) + .2*(.8^3) + .2*(.8^4)
+theoreticalDraws
+#3 Probability Dynamic
+numWins <- 0
+pA <- 0.2
+drawNum <- 0
+pVector <- vector()
+while(numWins < 5){
+  if(rbinom(1,1,pA) == 1){
+    numWins <- numWins + 1
+    pVector[drawNum] <- pA
+    pA <- pA - 0.03
+  }else{
+    pVector[drawNum] <- pA
+    pA <- pA + 0.01
+  }
+  drawNum<-drawNum+1
+}
+
+plot(pVector, type="l", main="Probability Dynamic for Prize A", xlab="Draw Number", ylab="Probability Prize A")
+#4 Probability Dynamic Function
+probabilityDynamic <- function(winGoal){
+  numWins <- 0
+  pA <- 0.2
+  drawNum <- 0
+  pVector <- vector()
+  while(numWins < winGoal){
+    if(rbinom(1,1,pA) == 1){
+      numWins <- numWins + 1
+      pVector[drawNum] <- pA
+      pA <- pA - 0.03
+    }else{
+      pVector[drawNum] <- pA
+      pA <- pA + 0.01
+    }
+    drawNum<-drawNum+1
+}
+
+plot(pVector, type="l", main="Probability Dynamic for Prize A", xlab="Draw Number", ylab="Probability Prize A")
+}
+
+probabilityDynamic(10)
+```

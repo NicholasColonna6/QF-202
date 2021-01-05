@@ -1,0 +1,38 @@
+---
+title: "Quiz 3"
+author: "Nicholas Colonna"
+date: "1/31/2018"
+output: word_document
+---
+```{r }
+#Generate 1,000 random numbers from NB(3; 0.2). 
+x <- rnbinom(1000, 3, 0.2)
+
+#Calculate sample mean based on the previous random numbers.
+sampleMean <- mean(x)
+sampleMean
+#Calculate sample deviation based on the previous random numbers
+sampleDeviation <- sqrt(var(x))
+sampleDeviation
+
+#Calculating theoretical mean
+theoreticalMean <- 3 * (1-0.2) / 0.2
+theoreticalMean
+
+#Calculating theoretical standard deviation
+theoreticalDeviation <- sqrt((3 * (1-0.2)) / (0.2)^2)
+theoreticalDeviation
+
+#Create a table to record your answers. 
+meanValues <- c(sampleMean, theoreticalMean)
+deviationValues <- c(sampleDeviation, theoreticalDeviation)
+
+table <- rbind(meanValues, deviationValues)
+
+rownames(table) <- c("Mean", "Deviation")
+colnames(table) <- c("Sample", "Theoretical")
+
+table
+
+```
+

@@ -1,0 +1,40 @@
+---
+title: "Quiz 9"
+author: "Nicholas Colonna"
+date: "4/11/2018"
+output: word_document
+---
+##In this question, you are required to use ar() from the package {stats}. In this function, you should use "mle" as the method input and answer following questions:
+
+```{r }
+library("stats")
+sample_data <- read.csv("sample_data.csv", header=T)
+sampleData <- sample_data$x
+model1 <- ar(sampleData, method="mle")
+
+# Problem 1. What is the order of the AR model.
+model1_order <- model1$order
+#Order:
+model1_order
+
+# Problem 2. What is/are the coefficients of the model.
+model1_coefficients <- model1$ar
+#Coefficients:
+model1_coefficients
+
+# After determining the order of AR model, use arima() from the package {stats} to build a model and call it Model 2.
+model2 <- arima(sampleData, order=c(model1_order,0,0))
+
+# Problem 3. Predict 10 points using the Model 2. Report the predictions and standard deviations. 
+model2_predictions <- predict(model2, 10)
+#Predictions:
+model2_predictions$pred
+#Standard Deviations:
+model2_predictions$se
+
+# Problem 4. Write down the mathematical expression of your AR model in comments
+model1$x.mean   #Model 1 Mean
+
+# x[t] - 0.03853392 = 0.3127814 * (x[t-1] - 0.03853392) + 0.1181541 * (x[t-2] - 0.03853392) - 0.2098132 * (x[t-3] - 0.03853392) + 0.5823371 * (x[t-4] - 0.03853392) + e[t]
+
+```

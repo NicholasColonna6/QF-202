@@ -1,0 +1,88 @@
+---
+title: "Quiz 4"
+author: "Nicholas Colonna"
+date: "2/7/2018"
+output: word_document
+---
+#Assuming the number of phone call arriving to a switching board is distributed according to a  Poisson distribution with the parameter lambda equaling 3 calls/minutes. Suppose I observe the switching board for 10 minutes. We want to investigate the probability that there exists an inter-arrival time greater than a time interval denoted t. To estimate this, follow the steps:
+
+```{r }
+#1. Draw a random number k from the Poisson distribution corresponding to the 10 minute interval.
+k <- rpois(1,30)
+k
+
+
+#2. Draw k random numbers from the Uniform distribution U(0, 10) - these are the arrival times for those k events.
+randomNums <- runif(k,0,10)
+randomNums
+
+
+#3. Sort the random times in step 2 from low to high.
+sortedNums <- sort(randomNums)
+sortedNums
+
+
+#4. Create a function that will take as input the arrival times from 3 and will output the smallest and the largest time interval between these consecutive arrivals. 
+intervals <- vector()
+i <- 1
+while(i <= length(sortedNums)){
+  if(i==1){
+    intervals[i] <- sortedNums[i]
+  }else{
+    intervals[i] <- sortedNums[i] - sortedNums[i-1]
+  }
+  i <- i + 1
+}
+intervals #Intervals
+max(intervals) #Largest Inverval 
+min(intervals) #Smallest Interval
+
+
+#5. Apply the function for 10,000 generated sequences. Create a histogram for each the smallest inter-arrival time and the largest inter-arrival time. What is the estimate for the expected smallest inter-arrival and largest inter-arrival. (Hint: How do one estimates expectations?)
+minVals <- vector()
+maxVals <- vector()
+test1 <- 0  #Counts all values that are less than 0.3
+test2 <- 0  #Counts all values that are not greater than 0.5
+
+for(i in 1:10000){
+  large.random <- sort(runif(k,0,10))
+  large.intervals <- vector()
+  j <- 1
+  while(j <= length(large.random)){
+    if(j==1){
+      large.intervals[j] <- large.random[j]
+    }else{
+      large.intervals[j] <- large.random[j] - large.random[j-1]
+    }
+    
+    if(large.intervals[j] < 0.3){
+      test1 <- test1 + 1
+    }
+    if(large.intervals[j] <= 0.05){
+      test2 <- test2 + 1
+    }
+    j <- j+1
+  }
+  
+  minVals[i] <- min(large.intervals)
+  maxVals[i] <- max(large.intervals)
+}
+
+mean(minVals)  #Estimate for expected smallest interval
+hist(minVals)
+
+mean(maxVals)  #Estimate for expected largetst interval
+hist(maxVals)
+
+
+#6. Based on your results what is the probability that at least one inter-arrival time is greater than 0.3? What is the probability that all inter-arrival times are greater than 0.05.
+
+p1 <- 1 - (test1) / (k*10000)
+p1
+
+p2 <- 1- (test2) / (k*10000)
+p2
+
+
+
+```

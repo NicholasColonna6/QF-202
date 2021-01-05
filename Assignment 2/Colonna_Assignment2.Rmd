@@ -1,0 +1,38 @@
+---
+title: "Assignment 2"
+author: "Nicholas Colonna"
+date: "2/11/2018"
+output: word_document
+---
+#Problem 2
+```{r }
+#(a) Read the input file into a variable and print its first lines of data using the command head.
+micron <- read.csv('MU.csv', header=TRUE)
+micron$Date <- as.Date(micron$Date, "%m/%d/%y")
+head(micron)
+
+#(b) Plot the daily close prices
+plot(micron$Date, micron$Adj.Close, main='MU Daily Close Prices 2017', xlab='Date', ylab='Adjusted Close', pch=20)
+
+#(c) Compute the corresponding series of log-returns. Make another plot and report the summary statistics using the command summary.
+micron["Returns"] <- NA
+i <- 1
+while(i <= length(micron$Adj.Close)){
+  if(i==1){
+    micron$Returns[i] <- NA
+  }else{
+    micron$Returns[i] <- log(micron$Adj.Close[i])-log(micron$Adj.Close[i-1])
+  }
+  i <- i+1
+}
+plot(micron$Date, micron$Returns, main='MU Daily Log Returns 2017', xlab='Date', ylab='Return', pch=20)
+summary(micron$Returns)
+
+#(d) Do a box plot of the log-returns and verify if there are any outliers.
+boxplot(micron$Returns, main='MU Daily Log Returns 2017', ylab='Returns', pch=20)
+#Since there are a few points outside of the plot, it means that we have outliers in the returns in both the positive and negative direction
+
+#(e) Do a normal qqplot with the log-returns series and comment your resuts.
+qqnorm(micron$Returns)
+#Since the data points fall along a straight, ascending line on the normal qqplot, with a majority of the points in the interval [-1,1], it would be a safe assumption to say the log-returns of Micron are normally distributed
+```

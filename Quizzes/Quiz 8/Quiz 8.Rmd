@@ -1,0 +1,36 @@
+---
+title: "Quiz 8"
+author: "Nicholas Colonna"
+date: "4/4/2018"
+output: word_document
+---
+
+#1. Use quantmod download 1-year length of BAC daily data and calculate the daily log return.
+#2. Generate a QQplot based on the log return and discuss normality based on the information from the QQplot
+#3. Generate an ACF plot based on the log return and interpret your result
+#4. Perform the Ljung box test to check the independence of the log return and comment on the test result.
+
+```{r }
+library("quantmod")
+
+#1
+getSymbols(Symbols = "BAC", from = "2017-04-03", to = "2018-04-03")
+returnsBAC <- dailyReturn(Ad(BAC), type="log")
+
+
+#2
+qqnorm(returnsBAC)
+qqline(returnsBAC, col = "red")
+#When looking at a normal Q-Q plot, you determine normality based off of the qq line. If the slope is 45 degrees, then your data is normal. In the case of our log returns for BAC, they are NOT normal because the slope of the qq line is less than 45 degrees.
+
+
+#3
+acf(returnsBAC)
+#When analyzing our ACF plot for BAC log returns, you will notice that at 3 the lag is significant because the line at mark 3 exceeds ACF threshold, marked by the dashed line on the ACF plot. We can further test by using the Ljung box test in part 4.
+
+#4
+Box.test(returnsBAC, type = "Ljung")
+Box.test(returnsBAC, lag=3, type = "Ljung")
+#When running the Ljung box test on our BAC returns, first with no lag, you will find that the p-value exceeds 0.05 and therefore is not significant. However, when adjusting the data to lag 3, which we determined from our ACF plot, our p-value drops below 0.05 and becomes signifant. Therefore, we can reject the null hypothesis that all correlations are equal to zero.
+
+```

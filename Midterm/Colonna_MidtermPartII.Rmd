@@ -1,0 +1,86 @@
+---
+title: "Midterm Part II"
+author: "Nicholas Colonna"
+date: "3/25/2018"
+output: word_document
+---
+
+## R Markdown
+
+```{r }
+#install.packages("quantmod")
+#install.packages("tseries")
+require("quantmod")
+require("tseries")   #for normality test
+
+#1 Download daily data for the past 3 years for 5 equities
+getSymbols("JPM", src="yahoo", from=as.Date("2015-03-01"), to=as.Date("2018-3-01"))
+getSymbols("GS", src="yahoo", from=as.Date("2015-03-01"), to=as.Date("2018-3-01"))
+getSymbols("BAC", src="yahoo", from=as.Date("2015-03-01"), to=as.Date("2018-3-01"))
+getSymbols("C", src="yahoo", from=as.Date("2015-03-01"), to=as.Date("2018-3-01"))
+getSymbols("WFC", src="yahoo", from=as.Date("2015-03-01"), to=as.Date("2018-3-01"))
+
+#**Note: All calculations done using adjusted closing prices for each equity**
+#2 Calculate montly log returns and output the mean monthly return for each of the 5 equities
+returnsJPM <- monthlyReturn(Ad(JPM), type="log")
+mean(returnsJPM)
+returnsGS <- monthlyReturn(Ad(GS), type="log")
+mean(returnsGS)
+returnsBAC <- monthlyReturn(Ad(BAC), type="log")
+mean(returnsBAC)
+returnsC <- monthlyReturn(Ad(C), type="log")
+mean(returnsC)
+returnsWFC <- monthlyReturn(Ad(WFC), type="log")
+mean(returnsWFC)
+
+
+#3 Calculate correlation between monthly returns. Which pair has the highest correlation?
+JPMvsGS <- cor(returnsJPM, returnsGS)
+JPMvsGS[1]
+JPMvsBAC <- cor(returnsJPM, returnsBAC)
+JPMvsBAC[1]
+JPMvsC <- cor(returnsJPM, returnsC)
+JPMvsC[1]
+JPMvsWFC <- cor(returnsJPM, returnsWFC)
+JPMvsWFC[1]
+GSvsBAC <- cor(returnsGS, returnsBAC)
+GSvsBAC[1]
+GSvsC <- cor(returnsGS, returnsC)
+GSvsC[1]
+GSvsWFC <- cor(returnsGS, returnsWFC)
+GSvsWFC[1]
+BACvsC <- cor(returnsBAC, returnsC)
+BACvsC[1]
+BACvsWFC <- cor(returnsBAC, returnsWFC)
+BACvsWFC[1]
+CvsWFC <- cor(returnsC, returnsWFC)
+CvsWFC[1]
+#The pair with the highest correlation is JPM and BAC, with a correlation of 0.929
+
+
+#4 Linear regression model between highest correlated monthly return equities
+linearRegression <- lm(Ad(JPM) ~ Ad(BAC))   
+#Regression done on adjusted closing prices for each equity (data wasn't specified on exam)
+summary(linearRegression)
+
+
+#5 Interpret the results from the linar regression
+
+# (Adjusted Close JPM) = Intercept + Beta * (Adjusted Close BAC)
+# Therefore, our regression model is:     JPM = 13.436 + 3.159 * BAC
+# The parameters in the model are significant. When looking at the summary of the regression, you can see that the p-value is very small, which means the parameters are significant. They were give '***' in the significance test
+# Therefore, there is evidence that the closing price of BAC has explanatory power when determining the closing price of JPM
+# The coefficient of multiple determination, also known as R-squared, for the model is 0.9764
+
+
+#Bonus: Test returns for normality 
+#Used Jarque Bera Test, as shown in the sample midterm
+jarque.bera.test(returnsJPM)   
+jarque.bera.test(returnsGS)
+jarque.bera.test(returnsBAC)
+jarque.bera.test(returnsC)
+jarque.bera.test(returnsWFC)
+# Since the p-value for the JB test is greater than 0.05 for all of the equities, we can assume that the log returns are not normally distributed
+
+# I ran out of time to do any more research on this topic
+```

@@ -1,0 +1,31 @@
+---
+title: "Quiz 2"
+author: "Nicholas Colonna"
+date: "1/24/2018"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assume you have a geometric distribution X ~ Ge(0.3)
+
+
+```{r}
+#1 Generate 1000 random numbers from geometric distribution with p = 0.3
+x <- rgeom(1000, 0.3)
+
+#2 Make a histogram for the random numbers
+hist(x, ylim=c(0,1), freq=F)
+
+#3 Make a density plot based on the true distribution
+plot(x=seq(0,max(x)), y = dgeom(seq(0,max(x)), 0.3), type = "l" )
+
+#4 Make a CDF plot based on the true distribution
+y <- seq(-1,(max(x)+1), by=0.01)
+plot(y, pgeom(y,0.3))
+
+```
+
+

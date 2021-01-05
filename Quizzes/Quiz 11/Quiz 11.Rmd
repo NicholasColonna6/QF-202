@@ -1,0 +1,43 @@
+---
+title: "Quiz 11"
+author: "Nicholas Colonna"
+date: "4/25/2018"
+output: word_document
+---
+
+#Using the following parameters, if we build an ARMA model, do you think the model is going to be stationary?
+#Parameters = {0.72,1.56,0.8,0.34} for AR part
+#Parameters= {0.3,-0.6} for MA part
+#Justify your answer.
+```{r }
+polynomial.rootsAR <- polyroot(c(1, -0.72, -1.56, -0.8, -0.34))
+Mod(polynomial.rootsAR)    ## not stationary
+###################
+polynomial.rootsMA <- polyroot(c(1, -0.3, 0.6))
+Mod(polynomial.rootsMA)    ## fine
+
+#The ARMA model will not be stationary. The MA part of the model is always stationary. However, the AR part is only stationary if all its roots fall outside the unit cirlce. As we can observe from the AR paramters, there are roots that are less than 1, and therefore fall within the unit circle. This, in turn, justifies why the ARMA model will not be stationary.
+```
+
+#Using the dataset, make and ARMA model, and report the order you detected for the AR and MA part.
+```{r }
+sample_data <- read.csv("data4quiz11.csv", header=T)
+data <- sample_data$x
+
+max.p=7
+max.q=7
+# takes for ever
+model.aic <- matrix(,nrow=max.p+1,ncol=max.q+1)
+for (p in 0:max.p){
+  for (q in 0:max.q){
+    model.aic[p+1,q+1] = arima(data,order=c(p,0,q))$aic
+  }
+}   
+print(model.aic)
+
+min(model.aic)
+which(model.aic == min(model.aic), arr.ind = TRUE)
+
+#When p=4 and q=7, we get the minimum AIC values for the model. Therefore, we can assume the order of AR is 4 and MA is 7   [ARMA(4,7)]
+
+```

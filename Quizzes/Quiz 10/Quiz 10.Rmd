@@ -1,0 +1,41 @@
+---
+title: "Quiz 10"
+author: "Nicholas Colonna"
+date: "4/18/2018"
+output: word_document
+---
+
+```{r }
+library("stats")
+library("fBasics")
+
+sample_data <- read.csv("data4Quiz10.csv", header=T)
+data <- sample_data$x
+
+#1. Use PACF to determine the order of AR model.
+s2 <- pacf(data)
+s2$acf
+#Discovered that order=5 since the acf is significant at that lag
+
+#2. Use ar() to build a model and name it as AR1
+AR1 <- ar(data, method="mle")
+AR1
+AR1$order  #Reconfirming that order=5
+
+#3. Use the order your select from question 1, build another model AR2 using arima()
+AR2 <- arima(data, order=c(5,0,0))
+AR2
+
+#4. Obtain the AIC values from AR1, what's your observation?
+AR1_aic <- AR1$aic
+AR1_aic
+# The values shown show the differences in AIC between each model and the best-fitting model. Therefore, the order that has aic=0 is the "best" model that the rest are compared to. Through my observation of these values, you can see that when the order is 5, we get an aic value of 5, which matches the value we selected for order in the questions above. You will also notice that the aic values are very large for orders 0 through 4
+
+#5. Use tsdiag() on AR2, interpret your results.
+tsdiag(AR2)
+# The results of tsdiag() on AR2 show the following:
+# First, the standardized residuals chart is comparing our observed frequency to the expected frequency. As you can see, most of the time it stays between -2 and 2, which means it is right around the expected frequency. However, there are times when it goes below -2, which means the observed frequency is less than the expected frequency, and above 2, which means the observed frequency is greater than the expected frequency. Since a majority of our data falls between -2 and 2, you can say the data appears to be normally distributed.
+# Second, the ACF plot is showing the correlation between the various lags. Since our model is order 5, none of the values should be significant. Lag 19 looks very close to exceeding the threshold to be significant, however, it is not.
+# Finally, we have the p-values for the Ljung-Box statistic, which has a null hypothesis that all the autocorrelations equal 0. Since for all lags it appears that the values are significant, we can determine that the values are not random and independent over time.
+
+```
